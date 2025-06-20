@@ -51,8 +51,27 @@ serve(async (req) => {
 
     console.log('Calling external webhook:', webhookUrl);
 
-    // Create the file URL for public access
-    const fileUrl = `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/sources/${filePath}`
+    // Initialize Supabase client to generate signed URL
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
+    // Generate a signed URL for the file (valid for 1 hour)
+    const { data: signedUrlData, error: signedUrlError } = await supabaseClient
+      .storage
+      .from('sources')
+      .createSignedUrl(filePath, 3600)
+
+    if (signedUrlError || !signedUrlData) {
+      console.error('Failed to create signed URL:', signedUrlError)
+      return new Response(
+        JSON.stringify({ error: 'Failed to create signed URL for file' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    const fileUrl = signedUrlData.signedUrl
 
     // Prepare the payload for the webhook with correct variable names
     const payload = {

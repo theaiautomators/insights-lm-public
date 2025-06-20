@@ -1,0 +1,128 @@
+CHANGELOG - Database Security Updates
+=====================================
+
+Date: 2025-06-20
+Purpose: Fix database security issues to enable application functionality
+
+## CHANGES MADE:
+
+### 1. Row Level Security (RLS) for Sources Table
+**File:** supabase/migrations/20250607000000_fix_sources_rls.sql
+**Issue:** Sources table was missing RLS policies, causing 403 Forbidden errors
+**Fix:** Added RLS policies to ensure users can only access their own sources
+**Security Impact:** IMPROVED - Users are now properly restricted to their own data
+
+Policies added:
+- SELECT: Users can only view sources in their own notebooks
+- INSERT: Users can only create sources for notebooks they own
+- UPDATE: Users can only update sources in their own notebooks
+- DELETE: Users can only delete sources in their own notebooks
+
+### 2. Missing User Profiles
+**File:** supabase/migrations/20250607000001_fix_missing_profiles.sql
+**Issue:** User profiles weren't being created, causing foreign key violations
+**Fix:** Created profiles for existing users and reinforced the trigger
+**Security Impact:** NEUTRAL - This is a data integrity fix, no security implications
+
+### 3. Edge Function Storage Access
+**File:** supabase/functions/process-document/index.ts
+**Issue:** Function tried to access private storage with public URLs
+**Fix:** Changed to use signed URLs with 1-hour expiration
+**Security Impact:** IMPROVED - Files now require authentication and expire
+
+Original code attempted:
+```
+/storage/v1/object/public/sources/${filePath}  // Would fail on private bucket
+```
+
+Changed to:
+```
+createSignedUrl(filePath, 3600)  // Secure, time-limited access
+```
+
+## SECURITY ASSESSMENT:
+
+✅ **No Security Degradation** - All changes maintain or improve security:
+
+1. **RLS Policies**: Properly restrict data access to authenticated users
+2. **Signed URLs**: More secure than public URLs, with time limits
+3. **Profile Creation**: Only affects data integrity, not security
+
+## RECOMMENDATIONS:
+
+1. **Monitor Edge Function Logs**: Check for any unauthorized access attempts
+2. **Review N8N Webhook Security**: Ensure NOTEBOOK_GENERATION_AUTH is properly configured
+3. **Regular Security Audits**: Periodically review RLS policies as features evolve
+
+## ORIGINAL vs CURRENT STATE:
+
+### Original Issues:
+- Sources table had no RLS (any authenticated user could access any source)
+- Storage URLs were attempting public access on private buckets
+- Missing profiles prevented notebook creation
+
+### Current State:
+- Sources table properly secured with user-based RLS
+- Storage uses authenticated, time-limited signed URLs
+- Profile creation ensures referential integrity
+
+All changes follow Supabase security best practices and improve the overall security posture of the application.
+
+## ADDITIONAL CHANGES:
+
+### 4. Documentation and Automation Scripts
+**Files Added:**
+- CLAUDE.md - AI assistant guidance for Claude Code
+- deploy-functions.sh - Batch deployment script for edge functions
+- set-supabase-secrets.sh - Secret configuration helper script
+
+**Purpose:** Improve developer experience and deployment consistency
+**Security Impact:** NEUTRAL - Documentation and automation only
+
+### 5. Edge Function JWT Configuration
+**File:** supabase/config.toml
+**Changes:** Added JWT verification settings for edge functions
+```toml
+[functions.generate-notebook-content]
+verify_jwt = true
+
+[functions.send-chat-message]
+verify_jwt = true
+
+[functions.process-document]
+verify_jwt = true
+
+[functions.process-document-callback]
+verify_jwt = false  # Intentional - called by N8N with different auth
+
+[functions.process-additional-sources]
+verify_jwt = true
+```
+**Security Impact:** IMPROVED - Enforces authentication on most functions
+**Note:** process-document-callback intentionally skips JWT as it uses N8N authentication
+
+### 6. Webhook URL Corrections
+**Issue:** N8N webhook URLs had double slashes (//webhook/)
+**Fix:** Corrected to single slash (/webhook/)
+**Security Impact:** NEUTRAL - Fixing malformed URLs
+
+## SUMMARY OF ALL CHANGES:
+
+1. **Security Fixes Applied:**
+   - ✅ RLS policies for sources table
+   - ✅ JWT verification on edge functions
+   - ✅ Signed URLs for storage access
+   - ✅ Profile creation trigger reinforcement
+
+2. **Developer Experience Improvements:**
+   - ✅ Deployment automation scripts
+   - ✅ Secret management helper
+   - ✅ Comprehensive documentation
+
+3. **Configuration Updates:**
+   - ✅ Edge function security settings
+   - ✅ Webhook URL corrections
+
+## FINAL SECURITY ASSESSMENT:
+All changes maintain or improve security. No vulnerabilities were introduced. 
+The application is now properly secured with user-based access controls and authenticated storage.
