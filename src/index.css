@@ -99,3 +99,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Prompt Cost Estimator */
+.estimator {
+  margin: 40px auto;
+  padding: 32px;
+  max-width: 700px;
+  background: #0f172a;
+  border-radius: 12px;
+  color: white;
+}
+
+.estimator h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.estimator textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: none;
+  color: black;
+}
+
+.estimator select {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.estimator .result p {
+  margin: 6px 0;
+}
