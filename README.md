@@ -80,7 +80,7 @@ This project is built with a modern, powerful stack:
 
 > ⚠️ **Why This Guide Has Been Updated**
 >
-> Supabase has introduced a new authentication system and is moving towards a new service role secret and API keys, placing the old ones on a "legacy" footing. As a result, the edge functions in this repository have been updated to handle security, authentication, and authorization within the code of the function itself. This allows us to disable the "Verify JWT" flag on the functions. **Make sure you have the latest copy of the edge functions from this repository.**
+> Supabase has introduced a new authentication system and is moving towards new publishable + secret keys in place of the anon + service role secret, placing the old ones on a "legacy" footing. As a result, the edge functions in this repository have been updated to handle security, authentication, and authorization within the code of the function itself. This allows us to disable the "Verify JWT" flag on the functions. **Make sure you have the latest copy of the edge functions from this repository.**
 
 ## Getting Started: A Guide for No-Coders to Test and Customize
 
