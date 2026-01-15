@@ -4,7 +4,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "2fabf43f-6e6e-424b-8e93-9150e9ce7d6c444",
+        "path": "2fabf43f-6e6e-424b-8e93-9150e9ce7d6c",
         "authentication": "headerAuth",
         "options": {}
       },
