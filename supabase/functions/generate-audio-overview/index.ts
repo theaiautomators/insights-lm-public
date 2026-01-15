@@ -93,9 +93,9 @@ serve(async (req) => {
 
     // Get audio generation webhook URL and auth from secrets
     const audioGenerationWebhookUrl = Deno.env.get('AUDIO_GENERATION_WEBHOOK_URL')
-    const authHeader = Deno.env.get('NOTEBOOK_GENERATION_AUTH')
+    const webhookAuthHeader = Deno.env.get('NOTEBOOK_GENERATION_AUTH')
 
-    if (!audioGenerationWebhookUrl || !authHeader) {
+    if (!audioGenerationWebhookUrl || !webhookAuthHeader) {
       console.error('Missing audio generation webhook URL or auth')
       return new Response(
         JSON.stringify({ error: 'Audio generation service not configured' }),
@@ -114,7 +114,7 @@ serve(async (req) => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': authHeader,
+              'Authorization': webhookAuthHeader,
             },
             body: JSON.stringify({
               notebook_id: notebookId,

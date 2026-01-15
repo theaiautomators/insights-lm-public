@@ -106,10 +106,10 @@ You will need a notepad file open to copy and paste in various credentials and d
     * You'll get a "missing secrets" popup - **you can safely ignore this**.
     * Now type in the Bolt chat: `Execute the database migration in script 20250606152423_v0.1.sql in the supabase/migrations folder`
     * *(Note: You may need a paid Bolt account for this step to succeed)*
-    * Once the migration succeeds, type: `Now deploy the edge functions in the supabase/functions folder`
-4.  **Configure Edge Functions (Disable JWT Verification)**
+    * Once the migration succeeds, type: `Now deploy the edge functions in the supabase/functions folder and set the Verify JWT with legacy secret flag to false as we are handling auth within the edge function code`
+4.  **Verify Edge Functions Config**
     * The edge functions will now be available in the Supabase dashboard.
-    * **Important:** Go into **each edge function** in the Supabase dashboard and turn **OFF** the "Verify JWT with legacy secret" option. The updated edge functions now handle authentication internally.
+    * **Important:** Go into **each edge function** in the Supabase dashboard and ensure the "Verify JWT with legacy secret" option is set to False. If its enabled, then disable it. The updated edge functions now handle authentication internally.
 5.  **Import and Configure N8N Workflows**
     * The `/n8n` directory in this repository contains the JSON files for the required N8N workflows. There are 2 approaches here.
         1. The easiest is to import the "Import_Insights_LM_Workflows.json" file into a new workflow in n8n and follow the steps in the video. This includes configuring an n8n API key which will be used to auto-create all workflows needed by the system. You will also need to set various credentials.
