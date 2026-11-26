@@ -303,6 +303,8 @@ ffmpeg -version
 
 Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
+If your pull request changes a Supabase migration, [RattleCheck](.github/workflows/rattlecheck.yml) compares its permissions with the base branch and points to new high or critical findings. The check runs on committed SQL without a database connection.
+
 - Fork the Project
 - Create your Feature Branch (git checkout -b feature/AmazingFeature)
 - Commit your Changes (git commit -m 'Add some AmazingFeature')
